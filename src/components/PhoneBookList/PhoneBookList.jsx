@@ -19,3 +19,16 @@ const PhoneBookList = ({ phoneList, onDeletePhoneListItem }) => {
     </ul>
   );
 };
+
+export default PhoneBookList;
+
+PhoneBookList.propTypes = {
+  phoneList: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+    })
+  ),
+  onDeletePhoneListItem: PropTypes.func,
+};
