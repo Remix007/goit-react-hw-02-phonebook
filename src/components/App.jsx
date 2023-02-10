@@ -1,3 +1,10 @@
+import React from 'react';
+import { Component } from 'react';
+import { nanoid } from 'nanoid';
+import PhoneBookList from './PhoneBookList';
+import Form from './Form';
+import Filter from './Filter';
+
 class App extends Component {
   state = {
     phoneList: [
@@ -8,9 +15,9 @@ class App extends Component {
     ],
     filter: '',
   };
-
   formSubmitHendler = data => {
-    const {phoneList}= this.state;
+    // console.log(data);
+    const { phoneList } = this.state;
     const phoneBookListItem = {
       id: nanoid(),
       name: data.name,
@@ -19,7 +26,47 @@ class App extends Component {
     if (phoneList.find(item => item.name === phoneBookListItem.name)) {
       return alert(`${phoneBookListItem.name}  is olrady in contacts`);
     }
-    this.setState(prevState =>({
+    this.setState(prevState => ({
       phoneList: [phoneBookListItem, ...prevState.phoneList],
-    }))
+    }));
+  };
+
+  deletePhoneListItem = phoneListId => {
+    this.setState(prevState => ({
+      phoneList: prevState.phoneList.filter(
+        phoneListItem => phoneListItem.id !== phoneListId
+      ),
+    }));
+  };
+  changeFilter = event => {
+    this.setState({ filter: event.currentTarget.value });
+  };
+  getVisibleFilter = () => {
+    const { phoneList, filter } = this.state;
+
+    const normalizedFilter = filter.toLowerCase();
+
+    return phoneList.filter(item =>
+      item.name.toLowerCase().includes(normalizedFilter)
+    );
+  };
+
+  render() {
+    const { filter } = this.state;
+
+    const filteredPhoneBookList = this.getVisibleFilter();
+
+    return (
+      <>
+        <Form onSubmit={this.formSubmitHendler} />
+
+        <Filter value={filter} onChange={this.changeFilter} />
+        <PhoneBookList
+          phoneList={filteredPhoneBookList}
+          onDeletePhoneListItem={this.deletePhoneListItem}
+        />
+      </>
+    );
   }
+}
+export default App;
